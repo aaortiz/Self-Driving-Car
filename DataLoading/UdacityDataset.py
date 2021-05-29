@@ -82,12 +82,12 @@ class UdacityDataset(Dataset):
         speed_t = torch.tensor(speed)
         del angle, torque, speed
             
-        return image, timestamp, frame_id, angle_t, torque_t, speed_t
+        return image.float(), timestamp, frame_id, angle_t, torque_t, speed_t
     
     def read_data(self, idx):
         if isinstance(idx, list):
             data = None
-            for i in idx:
+            for i in idx: # [:1000] Temp debug
                 new_data = self.read_data(i)
                 if data is None:
                     data = [[] for _ in range(len(new_data))]

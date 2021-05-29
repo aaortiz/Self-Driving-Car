@@ -15,6 +15,8 @@ class TLearning(nn.Module):
         self.fc2 = nn.Linear(in_features = 512, out_features = 256, bias=True)
         self.fc3 = nn.Linear(in_features = 256, out_features = 64, bias=True)
         self.fc4 = nn.Linear(in_features = 64, out_features = 1, bias=True)
+        #self.float()
+        
     def forward(self, Input):
         image = self.ResNet(Input)
         # input size = (1,3,224,224)-(Batches, Channels, Height, Width)

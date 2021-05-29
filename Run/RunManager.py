@@ -34,6 +34,9 @@ class RunManager():
         self.network = None
         self.loader = None
         self.tb = None
+        self.training_set = None
+        self.validation_set = None
+        
     def begin_run(self, run,network,image_size):
         self.run_start_time = time.time()
         self.run_params = run
@@ -74,8 +77,8 @@ class RunManager():
         epoch_duration = time.time() - self.epoch_start_time
         run_duration = time.time()-self.run_start_time
         
-        loss = self.epoch_loss / len(self.loader.dataset)
-        accuracy = self.epoch_num_correct / len(self.loader.dataset)
+        loss = self.epoch_loss / len(self.validation_set) #formerly self.loader.dataset
+        accuracy = self.epoch_num_correct / len(self.validation_set) # formerly self.loader.dataset
         
         self.tb.add_scalar('Loss',loss,self.epoch_count)
         self.tb.add_scalar('Accuracy', accuracy, self.epoch_count)
@@ -100,7 +103,8 @@ class RunManager():
         display(df)
         
     def track_loss(self,loss):
-        self.epoch_loss +=loss.item() * self.loader.batch_size
+        # self.epoch_loss +=loss.item() * self.loader.batch_size # original line but go loader is nontyper error
+        self.epoch_loss +=loss.item()
         
     def track_num_correct(self,preds, labels):
         self.epoch_num_correct += self._get_num_correct(preds,labels)
@@ -115,5 +119,5 @@ class RunManager():
             
         ).to_csv(f'{fileName}.csv')
         
-        with open(f'{fileName}.json','w',encoading = 'utf-8') as f:
+        with open(f'{fileName}.json','w',encoding='utf-8') as f:
             json.dump(self.run_data, f, ensure_ascii = False, indent =4)
